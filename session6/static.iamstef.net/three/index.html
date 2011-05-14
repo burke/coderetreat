@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="js/three.js"></script>
+    <script src="js/detector.js"></script>
+    <script src="js/RequestAnimationFrame.js"></script>
+    <script src="../../jquery.min.js"></script>
+    <script src="../../underscore.js"></script>
+    <script src="../../session5browsersafe.js"></script>
+    <style>
+      html{
+        background-color: #000000;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+    var camera, scene, renderer,
+    geometry, solid, wire , mesh, plane,group,
+    mouseX = 0, mouseY = 0;
+
+    window.grid = {
+    }
+
+    init();
+    animate();
+
+    function init() {
+
+        camera = new THREE.Camera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+        camera.position.z = 1000;
+
+        window.scene =scene= new THREE.Scene();
+
+
+        solid = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: false } );
+
+        renderer = Detector.webgl ?  new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+        document.body.appendChild( renderer.domElement );
+    }
+
+    function onDocumentMouseMove( event ) {
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+      mouseX = event.clientX - windowHalfX;
+      mouseY = event.clientY - windowHalfY;
+				//targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+			}
+    function animate() {
+
+        // Include examples/js/RequestAnimationFrame.js for cross-browser compatibility.
+        requestAnimationFrame( animate );
+        render();
+
+    }
+
+    function render() {
+        var rx = Math.sin( new Date().getTime() * 0.0007 ) * 0.5,
+            ry = Math.sin( new Date().getTime() * 0.0003 ) * 0.5,
+            rz = Math.sin( new Date().getTime() * 0.0002 ) * 0.5;
+
+        camera.position.x += ( mouseX - camera.position.x ) * .05;
+        camera.position.y += ( - mouseY - camera.position.y ) * .05;
+        // missing method
+        //camera.rotateHorizontally( mouseX * 0.05 ); 
+        //camera.rotateVertically( mouseY * 0.05 );
+
+        //group.rotation.x += 0.01;
+        //group.rotation.y += 0.02;
+
+        //group.rotation.x = rx;
+        //group.rotation.y = ry;
+        //group.rotation.z = rz;
+
+        geometry  = new THREE.Cube( 50, 50, 50 );
+        wire  = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true  } );
+
+        window.group = group = new THREE.Object3D();
+        console.log(window.group.children.length)
+        for(var i=-10; i<=10; i++) {
+          for( var j=-10; j<10; j++) {
+            if (window.grid["" + i + "," + j]) {
+              mesh = new THREE.Mesh(geometry, wire);
+              mesh.position.x = i * 50;
+              mesh.position.y = j * 50;
+              group.addChild(mesh);
+            }
+          }
+        }
+        window.scene.addObject(group);
+
+        renderer.render( scene, camera );
+window.scene.removeObject(group);
+      }
+
+      document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+</script>
+
+  </body>
+</html>
